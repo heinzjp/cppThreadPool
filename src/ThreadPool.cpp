@@ -30,3 +30,8 @@ ThreadPool::~ThreadPool() {
         worker.join(); // Wait for all threads to finish
     }
 }
+
+void ThreadPool::wait(){
+    std::unique_lock<std::mutex> lock(task_done_mutex);
+    task_done_cv.wait(lock, [this] { return tasks_in_progress.load() == 0; });
+}
